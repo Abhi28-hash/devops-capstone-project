@@ -1,2 +1,5 @@
 # devops-capstone-project
-Customer Accounts microservice project for IBM DevOps Capstone using Flask, Docker, Kubernetes, and CI/CD.
+
+This project is part of the IBM DevOps Capstone Project course.
+
+The project focuses on building a Customer Accounts microservice using Flask REST API, Docker, Kubernetes, GitHub Actions, and CI/CD practices.
