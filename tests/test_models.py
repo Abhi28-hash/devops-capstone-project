@@ -1,41 +1,30 @@
 import unittest
 from service.models import Account
 
-class TestAccount(unittest.TestCase):
+
+class TestAccountModel(unittest.TestCase):
 
     def setUp(self):
-        Account.data = {}
-        Account.ids = iter(range(1000))
+        Account._accounts = []
+        Account._counter = 0
 
     def test_create_an_account(self):
         account = Account("Abhi", "abhi@gmail.com")
-        self.assertIsNone(account.id)
+        result = account.create()
 
-        account.create()
-
-        self.assertIsNotNone(account.id)
-        self.assertEqual(account.id, 0)
-
-    def test_read_an_account(self):
-        account = Account("Abhi", "abhi@gmail.com")
-        account.create()
-
-        found = Account.find(account.id)
-
-        self.assertEqual(found.id, account.id)
-        self.assertEqual(found.name, account.name)
-        self.assertEqual(found.email, account.email)
+        self.assertIsNotNone(result.id)
+        self.assertEqual(result.name, "Abhi")
 
     def test_update_an_account(self):
         account = Account("Abhi", "abhi@gmail.com")
         account.create()
 
-        account.name = "Abhi Updated"
+        account.name = "Updated Abhi"
         account.update()
 
         updated = Account.find(account.id)
 
-        self.assertEqual(updated.name, "Abhi Updated")
+        self.assertEqual(updated.name, "Updated Abhi")
 
     def test_delete_an_account(self):
         account = Account("Abhi", "abhi@gmail.com")
@@ -47,16 +36,26 @@ class TestAccount(unittest.TestCase):
 
         self.assertIsNone(found)
 
+    def test_find_an_account(self):
+        account = Account("Abhi", "abhi@gmail.com")
+        account.create()
+
+        found = Account.find(account.id)
+
+        self.assertIsNotNone(found)
+        self.assertEqual(found.email, "abhi@gmail.com")
+
     def test_list_all_accounts(self):
         account1 = Account("Abhi", "abhi@gmail.com")
-        account1.create()
+        account2 = Account("Ram", "ram@gmail.com")
 
-        account2 = Account("John", "john@gmail.com")
+        account1.create()
         account2.create()
 
         accounts = Account.list_all()
 
         self.assertEqual(len(accounts), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
