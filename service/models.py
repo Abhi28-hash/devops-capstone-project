@@ -1,7 +1,12 @@
-class Account:
+"""
+Models for Account Service
+"""
 
-    _accounts = []
-    _counter = 0
+class Account:
+    """Account class"""
+
+    accounts = {}
+    counter = 1
 
     def __init__(self, name, email):
         self.id = None
@@ -9,30 +14,30 @@ class Account:
         self.email = email
 
     def create(self):
-        Account._counter += 1
-        self.id = Account._counter
-        Account._accounts.append(self)
+        """Creates an Account"""
+        self.id = Account.counter
+        Account.counter += 1
+        Account.accounts[self.id] = self
         return self
 
     def update(self):
-        for idx, account in enumerate(Account._accounts):
-            if account.id == self.id:
-                Account._accounts[idx] = self
-                return self
+        """Updates an Account"""
+        if self.id is None:
+            raise ValueError("Account ID is not set")
+
+        self.__class__.accounts[self.id] = self
 
     def delete(self):
-        Account._accounts = [
-            account for account in Account._accounts
-            if account.id != self.id
-        ]
+        """Deletes an Account"""
+        if self.id in self.__class__.accounts:
+            del self.__class__.accounts[self.id]
 
     @classmethod
     def find(cls, account_id):
-        for account in cls._accounts:
-            if account.id == account_id:
-                return account
-        return None
+        """Finds an Account by its ID"""
+        return cls.accounts.get(account_id)
 
     @classmethod
     def list_all(cls):
-        return cls._accounts
+        """Lists all Accounts"""
+        return list(cls.accounts.values())

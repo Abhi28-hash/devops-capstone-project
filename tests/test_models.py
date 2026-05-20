@@ -1,32 +1,57 @@
+"""
+Test cases for Account Model
+"""
+
 import unittest
 from service.models import Account
 
 
-class TestAccountModel(unittest.TestCase):
+class TestAccount(unittest.TestCase):
+    """Test Cases for Account"""
 
     def setUp(self):
-        Account._accounts = []
-        Account._counter = 0
+        Account.accounts = {}
+        Account.counter = 1
 
     def test_create_an_account(self):
+        """It should Create an Account"""
+
         account = Account("Abhi", "abhi@gmail.com")
-        result = account.create()
+        self.assertIsNone(account.id)
 
-        self.assertIsNotNone(result.id)
-        self.assertEqual(result.name, "Abhi")
+        account.create()
 
-    def test_update_an_account(self):
+        self.assertIsNotNone(account.id)
+        self.assertEqual(account.id, 1)
+
+    def test_find_account(self):
+        """It should Find an Account by ID"""
+
         account = Account("Abhi", "abhi@gmail.com")
         account.create()
 
-        account.name = "Updated Abhi"
+        found = Account.find(account.id)
+
+        self.assertEqual(found, account)
+
+    def test_update_an_account(self):
+        """It should update an Account"""
+
+        account = Account("Abhi", "abhi@gmail.com")
+        account.create()
+
+        account.name = "Abhishek"
+        account.email = "abhishek@gmail.com"
         account.update()
 
         updated = Account.find(account.id)
 
-        self.assertEqual(updated.name, "Updated Abhi")
+        self.assertEqual(updated.name, "Abhishek")
+        self.assertEqual(updated.email, "abhishek@gmail.com")
 
     def test_delete_an_account(self):
+        """It should Delete an Account"""
+
         account = Account("Abhi", "abhi@gmail.com")
         account.create()
 
@@ -36,20 +61,13 @@ class TestAccountModel(unittest.TestCase):
 
         self.assertIsNone(found)
 
-    def test_find_an_account(self):
-        account = Account("Abhi", "abhi@gmail.com")
-        account.create()
-
-        found = Account.find(account.id)
-
-        self.assertIsNotNone(found)
-        self.assertEqual(found.email, "abhi@gmail.com")
-
     def test_list_all_accounts(self):
-        account1 = Account("Abhi", "abhi@gmail.com")
-        account2 = Account("Ram", "ram@gmail.com")
+        """It should List all Accounts"""
 
+        account1 = Account("Abhi", "abhi@gmail.com")
         account1.create()
+
+        account2 = Account("John", "john@gmail.com")
         account2.create()
 
         accounts = Account.list_all()
